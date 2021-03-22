@@ -103,4 +103,4 @@ Current Environment: dev
 
 **Awesome, with your AWS resources successfully deployed, you're now ready to commence Module 3!**
 
-[<- Module 1](../module1/README.md) || [Module 3 ->](../module3/README.md) 
+[<- Module 1](../module1/README.md) || [^ Navigate Home ^](../README.md) ||  [Module 3 ->](../module3/README.md) 

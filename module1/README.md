@@ -770,4 +770,4 @@ The application should allow you to navigate between sign up, login and the plac
 
 **Awesome, you're now ready to commence Module 2!**
 
-[<- Prerequisites](../prerequisites/README.md) || [Module2 ->](../module2/README.md) 
+[<- Prerequisites](../getting-started/README.md) || [^ Navigate Home ^](../README.md) ||  [Module2 ->](../module2/README.md) 

@@ -230,4 +230,4 @@ Those are the only modifications needed to compliment our existing authenticatio
 
 **Congratulations, you're now ready to commence Module 4!**
 
-[<- Module 2](../module2/README.md) || [Module 4 ->](../module4/README.md) 
+[<- Module 2](../module2/README.md) || [^ Navigate Home ^](../README.md) ||  [Module 4 ->](../module4/README.md) 

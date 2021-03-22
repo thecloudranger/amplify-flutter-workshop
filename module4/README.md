@@ -88,3 +88,4 @@ import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 .. // try {
 ```
 
+[<- Module 3](../module3/README.md) || [^ Navigate Home ^](../README.md)
