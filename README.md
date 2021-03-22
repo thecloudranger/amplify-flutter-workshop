@@ -18,4 +18,7 @@ You will work your way through each module listed below, starting from the [Gett
 * [Module 2](./module2/README.md) - Building your Amplify application
 * [Module 3](./module3/README.md) - Configuring your Flutter application to authenticate against Amazon Cognito
 * [Module 4](./module4/README.md) - Image Upload and Gallery View
-* [Optional: Module 5](./module5/README.md) - Display Google Maps showing GPS coordinates of the device
+* [Cleaning Up](./clean-up/README.md) - Cleaning up the resources used in AWS
+
+## License
+[GPL V3](LICENSE)
