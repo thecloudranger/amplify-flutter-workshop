@@ -203,17 +203,23 @@ Lastly, we need to be able to automatically log the user in if they close the ap
 
 ``` dart
  ... // } Closing brace of logOut (line 114)
-void checkAuthStatus() async {
- try {
-   await Amplify.Auth.fetchAuthSession();
-
-   final state = AuthState(authFlowStatus: AuthFlowStatus.session);
-   authStateController.add(state);
- } catch (_) {
-   final state = AuthState(authFlowStatus: AuthFlowStatus.login);
-   authStateController.add(state);
- }
-}
+  void checkAuthStatus() async {
+    try {
+      final session = await Amplify.Auth.fetchAuthSession();
+      if(session.isSignedIn){
+        final state = AuthState(authFlowStatus: AuthFlowStatus.session);
+        authStateController.add(state);
+        print(' User is signed in 🎉');
+      } else {
+        final state = AuthState(authFlowStatus: AuthFlowStatus.login);
+        authStateController.add(state);
+        print(' User is not signed in 🚨');
+      }
+    } catch (_) {
+      final state = AuthState(authFlowStatus: AuthFlowStatus.login);
+      authStateController.add(state);
+    }
+  }
 ```
 
 checkAuthStatus will attempt to get the current AuthSession; if it's successful, the user will be signed in. If the fetch fails, this means the user is not logged in and should be presented with LoginPage.
