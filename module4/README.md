@@ -88,4 +88,188 @@ import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 .. // try {
 ```
 
+### Gallery Page
+
+Let's create the gallery view page that allows you to view images. Add **image_upload_page.dart** with the following content : 
+
+``` dart
+
+import 'package:flutter/material.dart';
+
+class GalleryView extends StatefulWidget {
+  final VoidCallback didSignOut;
+
+  GalleryView({Key key, @required this.didSignOut}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _GalleryViewState();
+}
+
+class _GalleryViewState extends State<GalleryView> {
+  List<dynamic> _photos = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Gallery'),
+      ),
+      body: Builder(builder: (context) {
+        if (_photos.isEmpty) {
+          return Center(
+            child: Text('No photos uploaded'),
+          );
+        } else {
+          return GridView.builder(
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Icon(Icons.photo),
+                );
+              });
+        }
+      }),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.photo_album),
+          onPressed: () {
+            showModalBottomSheet(context: context, builder: (context) {});
+          }),
+    );
+  }
+}
+
+```
+
+### Configuring Storage for Gallery
+
+We'll start by importing the dependencies into **image_upload_page.dart**
+
+``` dart
+...// import 'package:flutter/material.dart'; (line 1)
+import 'dart:io';
+import 'package:amplify_flutter/amplify.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+
+...// class GalleryView extends StatefulWidget {
+```
+Add the functions _getImageUrls and _pickAndUploadImage
+
+``` dart
+... // } Closing brace of Widget build(BuildContext context)  (line 48)
+  //1
+  void _getImageUrls() async {
+    try {
+      final listOptions =
+          S3ListOptions(accessLevel: StorageAccessLevel.private);
+      //2
+      final listResult = await Amplify.Storage.list(options: listOptions);
+      print(listResult.items);
+      final getUrlOptions =
+          GetUrlOptions(accessLevel: StorageAccessLevel.private);
+      //3
+      final imageUrls = await Future.wait(listResult.items.map((item) async {
+        final urlResult =
+            await Amplify.Storage.getUrl(key: item.key, options: getUrlOptions);
+        return urlResult.url;
+      }));
+
+      setState(() {
+        _imageUrls = imageUrls;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+  //4
+  void _pickAndUploadImage() async {
+    final selectedFileResult =
+        await FilePicker.platform.pickFiles(allowCompression: true);
+
+    if (selectedFileResult != null) {
+      print(selectedFileResult.files);      
+      final selectedImageFile = File(selectedFileResult.files.single.path);
+      final key = '${DateTime.now()}.jpg';
+      //5
+      try {
+        final uploadFileOptions =
+            UploadFileOptions(accessLevel: StorageAccessLevel.private);
+        await Amplify.Storage.uploadFile(
+            local: selectedImageFile, key: key, options: uploadFileOptions);
+        print('image uploaded');
+        _getImageUrls();
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+```
+1. The function _getImageUrls contains the logic for fetching the image URLs.
+2. You can list all of the objects uploaded under a given prefix. For the user to read the file, specify the same access level (private) and key you used to upload.
+3. Fetch the image URLs for every key obtained.
+4. The function _pickAndUploadImage holds the logic for selecting an image and uploading it to S3.
+5. After selecting a file, to upload to S3 from a data object, specify the key and the file to be uploaded.
+
+When adding the Storage category, you configure the level of access users have to your S3 bucket. You can configure separate rules for authenticated vs. guest users. When using the Storage category to upload files, you can also specify an access level for each individual file: guest, protected, or private.
+
+* **Guest** Accessible by all users of your application
+* **Protected** Readable by all users, but only writable by the creating user
+* **Private** Readable and writable only by the creating user
+
+In the above code snippet an options object specifying the private access level to only allow an object to be accessed by the creating user is created.
+
+Update the list name _photos to _imageUrls to reflect fetching of image URLs from S3. Replace the same in other references in **image_upload_page.dart**
+
+``` dart
+...// class _GalleryViewState extends State<GalleryView> { (line 18)
+  List<String> _imageUrls = [];
+```
+
+Replace the GridView with a refresh indicator that will fetch the image URLs and create a GridView to list the images
+
+```dart
+... // return GridView.builder( (line 32)
+          return RefreshIndicator(
+            onRefresh: () async => _getImageUrls(),
+            child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, crossAxisSpacing: 4, mainAxisSpacing: 4),
+                itemCount: _imageUrls.length,
+                itemBuilder: (context, index) {
+                  return CachedNetworkImage(
+                    imageUrl: _imageUrls[index],
+                    placeholder: (context, url) =>
+                        Center(child: CircularProgressIndicator()),
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  );
+                }),
+          );
+```
+
+Set onPressed to invoke the function _pickAndUploadImage
+
+```dart
+... // onPressed: () { (line 53)
+          onPressed: () => _pickAndUploadImage()),
+```
+
+Initialize the state 
+
+``` dart
+... // List<String> _imageUrls = []; (line 18)
+  @override
+  void initState() {
+    super.initState();
+    _getImageUrls();
+  }
+```
+
+Build and run the app and you should be able to upload images and view them in the gallery.
+
 [<- Module 3](../module3/README.md) || [^ Navigate Home ^](../README.md)

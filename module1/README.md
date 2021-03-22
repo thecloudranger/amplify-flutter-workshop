@@ -703,22 +703,22 @@ if (snapshot.data.authFlowStatus == AuthFlowStatus.verification)
 ... // pages closing ],
 ```
 
-For the moment, we're going to add a placeholder page that we will come back and add functionality to. Add **image_gallery_page.dart** with the following content :
+For the moment, we're going to add a placeholder page that we will come back and add functionality to. Add **home_page.dart** with the following content :
 ``` dart
 import 'package:flutter/material.dart';
 
 // 1
-class GalleryView extends StatelessWidget {
+class HomePage extends StatelessWidget {
   // 2
   final VoidCallback shouldLogOut;
 
-  GalleryView({Key key, this.shouldLogOut}) : super(key: key);
+  HomePage({Key key, this.shouldLogOut}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gallery'),
+        title: Text('Home'),
         actions: [
           // Log Out Button
           Padding(
@@ -748,17 +748,17 @@ void logOut() {
 ... // AuthService closing }
 ```
 
-Finally, implement the case for GpsPage in the Navigator.pages of **main.dart**.
+Finally, implement the case for HomePage in the Navigator.pages of **main.dart**.
 ``` dart
 ... // import 'verification_page.dart' (line 5)
-import 'image_gallery_page.dart';
+import 'home_page.dart';
 ```
 
 ``` dart
 ... // _authService.verifyCode)), (line 62)
 if (snapshot.data.authFlowStatus == AuthFlowStatus.session)
     MaterialPage(
-        child: GalleryView(shouldLogOut: _authService.logOut))
+        child: HomePage(shouldLogOut: _authService.logOut))
 ... // pages closing ]                ],
 ```
 
@@ -766,7 +766,7 @@ if (snapshot.data.authFlowStatus == AuthFlowStatus.session)
 
 The application should allow you to navigate between sign up, login and the placeholder Image Gallery Page (which allows you to log out).
 
-![GPS_screen](./images/flutter_workshop_app_module1_photo3.png)
+![Home_screen](./images/flutter_workshop_app_module1_photo3.png)
 
 **Awesome, you're now ready to commence Module 2!**
 
