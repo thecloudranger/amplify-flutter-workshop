@@ -83,6 +83,7 @@ import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 
 ``` dart
 .. // AmplifyAuthCognito authPlugin = AmplifyAuthCognito(); (line 91)
+    AmplifyStorageS3 storage = AmplifyStorageS3();
     Amplify.addPlugins([authPlugin, storage]);
 
 .. // try {
